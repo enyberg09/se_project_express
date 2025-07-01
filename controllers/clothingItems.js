@@ -12,20 +12,22 @@ const createItem = (req, res) => {
       console.log(item);
       res.send({ data: item });
     })
-    .catch((e) => {
+    .catch((err) => {
+      console.error(err);
       res
         .status(errors.NOT_FOUND_STATUS_CODE)
-        .send({ message: "Error from createItem", e });
+        .send({ message: "Error creating item" });
     });
 };
 
 const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(errors.OK_STATUS_CODE).send(items))
-    .catch((e) => {
+    .catch((err) => {
+      console.error(err);
       res
         .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: "Error from getItems", e });
+        .send({ message: "Item not found" });
     });
 };
 
@@ -36,10 +38,11 @@ const updateItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(itemId, { $set: { imageURL } })
     .orFail()
     .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
-    .catch((e) => {
+    .catch((err) => {
+      console.error(err);
       res
         .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: "Error from updateItems", e });
+        .send({ message: "Error updating item" });
     });
 };
 
@@ -48,11 +51,12 @@ const deleteItem = (req, res) => {
   console.log(itemId);
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then((item) => res.status(errors.UPDATED_STATUS_CODE).send({}))
-    .catch((e) => {
+    .then(() => res.status(errors.UPDATED_STATUS_CODE).send())
+    .catch((err) => {
+      console.error(err);
       res
-        .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: "Error from deleteItem", e });
+        .status(errors.NOT_FOUND_STATUS_CODE)
+        .send({ message: "Error deleting item" });
     });
 };
 
