@@ -52,11 +52,11 @@ const deleteItem = (req, res) => {
   console.log(itemId);
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then(() => res.status(errors.UPDATED_STATUS_CODE).send())
+    .then((item) => res.status(errors.UPDATED_STATUS_CODE).send())
     .catch((err) => {
       console.error(err);
       res
-        .status(errors.BAD_REQUEST_STATUS_CODE)
+        .status(errors.NOT_FOUND_STATUS_CODE)
         .send({ message: "Error deleting item" });
     });
 };
@@ -72,7 +72,7 @@ const likeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       res
-        .status(errors.BAD_REQUEST_STATUS_CODE)
+        .status(errors.NOT_FOUND_STATUS_CODE)
         .send({ message: "Error liking item" });
     });
 };
@@ -88,7 +88,7 @@ const dislikeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       res
-        .status(errors.BAD_REQUEST_STATUS_CODE)
+        .status(errors.NOT_FOUND_STATUS_CODE)
         .send({ message: "Error disliking item" });
     });
 };
