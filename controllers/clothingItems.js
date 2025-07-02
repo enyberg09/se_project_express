@@ -2,22 +2,18 @@ const ClothingItem = require("../models/clothingItem");
 const errors = require("../utils/errors");
 
 const createItem = (req, res) => {
-  console.log(req);
-  console.log(req.body);
-
   const { name, weather, imageUrl } = req.body;
   const owner = req.user._id;
 
   ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => {
-      console.log(item);
       res.status(errors.CREATED_STATUS_CODE).send({ data: item });
     })
     .catch((err) => {
       console.error(err);
       res
         .status(errors.BAD_REQUEST_STATUS_CODE)
-        .send({ message: "Ivalid data" });
+        .send({ message: "Invalid data" });
     });
 };
 
@@ -52,12 +48,18 @@ const deleteItem = (req, res) => {
   console.log(itemId);
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then(() => res.status(errors.OK_STATUS_CODE).send())
+    .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
     .catch((err) => {
       console.error(err);
-      res
-        .status(errors.NOT_FOUND_STATUS_CODE)
-        .send({ message: "Item not found" });
+      if (err.name === "CastError") {
+        res
+          .status(errors.BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Item not found" });
+      } else {
+        res
+          .status(errors.NOT_FOUND_STATUS_CODE)
+          .send({ message: "Item not found" });
+      }
     });
 };
 
@@ -71,9 +73,15 @@ const likeItem = (req, res) => {
     .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
     .catch((err) => {
       console.error(err);
-      res
-        .status(errors.NOT_FOUND_STATUS_CODE)
-        .send({ message: "Item not found" });
+      if (err.name === "CastError") {
+        res
+          .status(errors.BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Item not found" });
+      } else {
+        res
+          .status(errors.NOT_FOUND_STATUS_CODE)
+          .send({ message: "Item not found" });
+      }
     });
 };
 
@@ -87,9 +95,15 @@ const dislikeItem = (req, res) => {
     .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
     .catch((err) => {
       console.error(err);
-      res
-        .status(errors.NOT_FOUND_STATUS_CODE)
-        .send({ message: "Item not found" });
+      if (err.name === "CastError") {
+        res
+          .status(errors.BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Item not found" });
+      } else {
+        res
+          .status(errors.NOT_FOUND_STATUS_CODE)
+          .send({ message: "Item not found" });
+      }
     });
 };
 
