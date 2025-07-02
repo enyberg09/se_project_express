@@ -17,7 +17,7 @@ const createItem = (req, res) => {
       console.error(err);
       res
         .status(errors.BAD_REQUEST_STATUS_CODE)
-        .send({ message: "Error creating item" });
+        .send({ message: "Ivalid data" });
     });
 };
 
@@ -28,7 +28,7 @@ const getItems = (req, res) => {
       console.error(err);
       res
         .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: "Item not found" });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -42,8 +42,8 @@ const updateItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       res
-        .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: "Error updating item" });
+        .status(errors.NOT_FOUND_STATUS_CODE)
+        .send({ message: "Item not found" });
     });
 };
 
@@ -52,12 +52,12 @@ const deleteItem = (req, res) => {
   console.log(itemId);
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then((item) => res.status(errors.UPDATED_STATUS_CODE).send())
+    .then(() => res.status(errors.OK_STATUS_CODE).send())
     .catch((err) => {
       console.error(err);
       res
         .status(errors.NOT_FOUND_STATUS_CODE)
-        .send({ message: "Error deleting item" });
+        .send({ message: "Item not found" });
     });
 };
 
@@ -73,7 +73,7 @@ const likeItem = (req, res) => {
       console.error(err);
       res
         .status(errors.NOT_FOUND_STATUS_CODE)
-        .send({ message: "Error liking item" });
+        .send({ message: "Item not found" });
     });
 };
 
@@ -89,7 +89,7 @@ const dislikeItem = (req, res) => {
       console.error(err);
       res
         .status(errors.NOT_FOUND_STATUS_CODE)
-        .send({ message: "Error disliking item" });
+        .send({ message: "Item not found" });
     });
 };
 
