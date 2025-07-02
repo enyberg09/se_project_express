@@ -1,9 +1,71 @@
-# WTWR (What to Wear?): Back End
-The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
-## Running the Project
-`npm run start` — to launch the server 
+# WTWR (What to Wear?) — Back End
 
-`npm run dev` — to launch the server with the hot reload feature
+This is the back-end server for the **WTWR (What to Wear?)** application.
 
-### Testing
-Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
+It handles the API, database, and user authorization logic for managing clothing items and user actions like liking or unliking items.
+
+---
+
+## 📌 Project Overview
+
+The back-end focuses on:
+
+- Building an Express.js server
+- Working with MongoDB using Mongoose
+- Setting up API endpoints for CRUD operations
+- Implementing user interactions like likes/unlikes
+- Handling validation and errors properly
+- Preparing the server for deployment on a remote machine
+
+---
+
+## 🚀 Running the Project Locally
+
+1. **Install MongoDB** on your machine if you don't already have it.
+2. **Start the MongoDB service** so the server can connect to the database. (The database and collections will be created automatically when you first use the API)
+3. **Install dependencies:**
+
+   ```bash
+   npm install
+   ```
+
+4. **For production mode**
+
+   ```bash
+   npm run start
+   ```
+
+5. **For development mode (with nodemon)**
+
+   ```bash
+   npm run dev
+   ```
+
+## 🛠️ API Endpoints
+
+**Clothing Items**
+
+- POST /items — Create a new clothing item
+- GET /items — Get all clothing items
+- PUT /items/:itemId — Update a clothing item's image URL
+- DELETE /items/:itemId — Delete a clothing item
+- PUT /items/:itemId/likes — Like a clothing item
+- DELETE /items/:itemId/likes — Unlike a clothing item
+
+## ✅ Key Features
+
+- MongoDB + Mongoose integration
+- Data validation using the validator library for URLs
+- Error handling with appropriate HTTP status codes
+- Full CRUD operations for clothing items
+- Like/Unlike functionality with user tracking
+- Schema validation with required fields and constraints
+- Modular code structure with separate router and controller files
+
+## 🛠️ Technical Stack
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- Validator (for URL checks)

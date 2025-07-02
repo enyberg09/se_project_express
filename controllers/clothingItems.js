@@ -66,6 +66,7 @@ const likeItem = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
+    .orFail()
     .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
     .catch((err) => {
       console.error(err);
@@ -81,6 +82,7 @@ const dislikeItem = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true }
   )
+    .orFail()
     .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
     .catch((err) => {
       console.error(err);
