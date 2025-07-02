@@ -5,12 +5,12 @@ const createItem = (req, res) => {
   console.log(req);
   console.log(req.body);
 
-  const { name, weather, imageUrl } = req.body;
+  const { name, weather, imageUrl, owner } = req.body;
 
-  ClothingItem.create({ name, weather, imageUrl })
+  ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => {
       console.log(item);
-      res.send({ data: item });
+      res.status(errors.CREATED_STATUS_CODE).send({ data: item });
     })
     .catch((err) => {
       console.error(err);
@@ -60,9 +60,41 @@ const deleteItem = (req, res) => {
     });
 };
 
+const likeItem = (req, res) => {
+  ClothingItem.findByIdAndUpdate(
+    req.params.itemId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true }
+  )
+    .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
+    .catch((err) => {
+      console.error(err);
+      res
+        .status(errors.BAD_REQUEST_STATUS_CODE)
+        .send({ message: "Error liking item" });
+    });
+};
+
+const dislikeItem = (req, res) => {
+  ClothingItem.findByIdAndUpdate(
+    req.params.itemId,
+    { $pull: { likes: req.user._id } },
+    { new: true }
+  )
+    .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
+    .catch((err) => {
+      console.error(err);
+      res
+        .status(errors.BAD_REQUEST_STATUS_CODE)
+        .send({ message: "Error disliking item" });
+    });
+};
+
 module.exports = {
   createItem,
   getItems,
   updateItem,
   deleteItem,
+  likeItem,
+  dislikeItem,
 };

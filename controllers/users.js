@@ -36,11 +36,12 @@ const getUser = (req, res) => {
     .then((user) => res.status(errors.OK_STATUS_CODE).send(user))
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFound") {
+      if (err.name === "DocumentNotFoundError") {
         return res
           .status(errors.NOT_FOUND_STATUS_CODE)
           .send({ message: err.message });
-      } if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res
           .status(errors.BAD_REQUEST_STATUS_CODE)
           .send({ message: err.message });
