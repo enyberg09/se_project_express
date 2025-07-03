@@ -8,7 +8,7 @@ const getUsers = (req, res) => {
       console.error(err);
       return res
         .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -21,11 +21,11 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(errors.BAD_REQUEST_STATUS_CODE)
-          .send({ message: err.message });
+          .send({ message: "Invalid data provided for user creation" });
       }
       return res
         .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -39,16 +39,16 @@ const getUser = (req, res) => {
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(errors.NOT_FOUND_STATUS_CODE)
-          .send({ message: err.message });
+          .send({ message: "No item with that ID exists" });
       }
       if (err.name === "CastError") {
         return res
           .status(errors.BAD_REQUEST_STATUS_CODE)
-          .send({ message: err.message });
+          .send({ message: "Invalid item ID format" });
       }
       return res
         .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 

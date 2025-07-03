@@ -11,9 +11,15 @@ const createItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res
-        .status(errors.BAD_REQUEST_STATUS_CODE)
-        .send({ message: "Invalid data" });
+      if (err.name === "ValidationError") {
+        res
+          .status(errors.BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid data" });
+      } else {
+        res
+          .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
+          .send({ message: "An error has occurred on the server" });
+      }
     });
 };
 
@@ -28,21 +34,6 @@ const getItems = (req, res) => {
     });
 };
 
-const updateItem = (req, res) => {
-  const { itemId } = req.params;
-  const { imageUrl } = req.body;
-
-  ClothingItem.findByIdAndUpdate(itemId, { $set: { imageUrl } })
-    .orFail()
-    .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
-    .catch((err) => {
-      console.error(err);
-      res
-        .status(errors.NOT_FOUND_STATUS_CODE)
-        .send({ message: "Item not found" });
-    });
-};
-
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   console.log(itemId);
@@ -51,14 +42,18 @@ const deleteItem = (req, res) => {
     .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
     .catch((err) => {
       console.error(err);
-      if (err.name === "CastError") {
-        res
-          .status(errors.BAD_REQUEST_STATUS_CODE)
-          .send({ message: "Item not found" });
-      } else {
+      if (err.name === "DocumentNotFoundError") {
         res
           .status(errors.NOT_FOUND_STATUS_CODE)
-          .send({ message: "Item not found" });
+          .send({ message: "No item with that ID exists" });
+      } else if (err.name === "CastError") {
+        res
+          .status(errors.BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid item ID format" });
+      } else {
+        res
+          .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
+          .send({ message: "An error has occurred on the server" });
       }
     });
 };
@@ -73,14 +68,18 @@ const likeItem = (req, res) => {
     .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
     .catch((err) => {
       console.error(err);
-      if (err.name === "CastError") {
-        res
-          .status(errors.BAD_REQUEST_STATUS_CODE)
-          .send({ message: "Item not found" });
-      } else {
+      if (err.name === "DocumentNotFoundError") {
         res
           .status(errors.NOT_FOUND_STATUS_CODE)
-          .send({ message: "Item not found" });
+          .send({ message: "No item with that ID exists" });
+      } else if (err.name === "CastError") {
+        res
+          .status(errors.BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid item ID format" });
+      } else {
+        res
+          .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
+          .send({ message: "An error has occurred on the server" });
       }
     });
 };
@@ -95,14 +94,18 @@ const dislikeItem = (req, res) => {
     .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
     .catch((err) => {
       console.error(err);
-      if (err.name === "CastError") {
-        res
-          .status(errors.BAD_REQUEST_STATUS_CODE)
-          .send({ message: "Item not found" });
-      } else {
+      if (err.name === "DocumentNotFoundError") {
         res
           .status(errors.NOT_FOUND_STATUS_CODE)
-          .send({ message: "Item not found" });
+          .send({ message: "No item with that ID exists" });
+      } else if (err.name === "CastError") {
+        res
+          .status(errors.BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid item ID format" });
+      } else {
+        res
+          .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
+          .send({ message: "An error has occurred on the server" });
       }
     });
 };
@@ -110,7 +113,6 @@ const dislikeItem = (req, res) => {
 module.exports = {
   createItem,
   getItems,
-  updateItem,
   deleteItem,
   likeItem,
   dislikeItem,
