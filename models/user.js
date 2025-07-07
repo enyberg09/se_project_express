@@ -18,6 +18,27 @@ const userSchema = new mongoose.Schema({
       message: "You must enter a valid URL",
     },
   },
+  email: {
+    type: String,
+    required: true,
+    validate: {
+      validator(value) {
+        return validator.isEmail(value);
+      },
+      message: "You must enter a valid email",
+    },
+  },
+  password: {
+    type: String,
+    required: true,
+    validate: {
+      validator(value) {
+        return validator.isStrongPassword(value);
+      },
+      message:
+        "You must enter a valid password that has the minimum length of 8 characters, one lowercase character, one uppercase character, one number, and one symbol.",
+    },
+  },
 });
 
 module.exports = mongoose.model("user", userSchema);
