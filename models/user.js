@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcrypt");
+console.log("🚨 Bcrypt typeof in user model:", typeof bcrypt);
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -21,6 +23,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
     validate: {
       validator(value) {
         return validator.isEmail(value);
@@ -40,5 +43,26 @@ const userSchema = new mongoose.Schema({
     },
   },
 });
+
+userSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+  next();
+});
+
+userSchema.statics.findUserByCredentials = async function (email, password) {
+  const user = await this.findOne({ email });
+  if (!user) {
+    return Promise.reject(new Error("Incorrect email or password"));
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return Promise.reject(new Error("Incorrect email or password"));
+  }
+
+  return user;
+};
 
 module.exports = mongoose.model("user", userSchema);
