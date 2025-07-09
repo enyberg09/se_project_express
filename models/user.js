@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
-console.log("🚨 Bcrypt typeof in user model:", typeof bcrypt);
 
 const userSchema = new mongoose.Schema({
   name: {

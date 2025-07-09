@@ -1,6 +1,6 @@
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const errors = require("../utils/errors");
-const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 
 const getUsers = (req, res) => {
@@ -23,8 +23,7 @@ const loginUser = async (req, res) => {
     const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
       expiresIn: "7d",
     });
-
-    res.status(errors.OK_STATUS_CODE).send({
+    return res.status(errors.OK_STATUS_CODE).send({
       token,
       email: user.email,
       _id: user._id,
@@ -52,7 +51,7 @@ const createUser = async (req, res) => {
       email,
       password,
     });
-    res.status(errors.CREATED_STATUS_CODE).send({
+    return res.status(errors.CREATED_STATUS_CODE).send({
       name: user.name,
       avatar: user.avatar,
       email: user.email,
@@ -65,7 +64,8 @@ const createUser = async (req, res) => {
         message:
           "A user with that email already exists. Please use a different email.",
       });
-    } else if (err.name === "ValidationError") {
+    }
+    if (err.name === "ValidationError") {
       return res
         .status(errors.BAD_REQUEST_STATUS_CODE)
         .send({ message: "Invalid data provided for user creation" });
@@ -87,7 +87,8 @@ const getCurrentUser = (req, res) => {
         return res
           .status(errors.NOT_FOUND_STATUS_CODE)
           .send({ message: "No item with that ID exists" });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res
           .status(errors.BAD_REQUEST_STATUS_CODE)
           .send({ message: "Invalid item ID format" });
@@ -117,11 +118,13 @@ const updateUser = (req, res) => {
         return res
           .status(errors.NOT_FOUND_STATUS_CODE)
           .send({ message: "No item with that ID exists" });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res
           .status(errors.BAD_REQUEST_STATUS_CODE)
           .send({ message: "Invalid item ID format" });
-      } else if (err.name === "ValidationError") {
+      }
+      if (err.name === "ValidationError") {
         return res
           .status(errors.BAD_REQUEST_STATUS_CODE)
           .send({ message: "Failed to update User" });
