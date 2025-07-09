@@ -37,9 +37,25 @@ const getItems = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   console.log(itemId);
-  ClothingItem.findByIdAndDelete(itemId)
+  ClothingItem.findById(itemId)
     .orFail()
-    .then((item) => res.status(errors.OK_STATUS_CODE).send({ data: item }))
+    .then((item) => {
+      if (!item) {
+        return res
+          .status(errors.NOT_FOUND_STATUS_CODE)
+          .send({ message: "Item not found" });
+      }
+      if (item.owner.toString() !== req.user._id) {
+        return res
+          .status(errors.NOT_AUTHORIZED_STATUS_CODE)
+          .send({ message: "ID does not match" });
+      }
+      return item.deleteOne().then(() => {
+        res
+          .status(errors.OK_STATUS_CODE)
+          .send({ message: "Item successfully deleted" });
+      });
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
