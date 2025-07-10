@@ -3,20 +3,13 @@ const User = require("../models/user");
 const errors = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.status(errors.OK_STATUS_CODE).send(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(errors.INTERNAL_SERVER_ERROR_STATUS_CODE)
-        .send({ message: "An error has occurred on the server" });
-    });
-};
-
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-
+  if (!email || !password) {
+    return res
+      .status(errors.BAD_REQUEST_STATUS_CODE)
+      .send({ message: "The password and email fields are required" });
+  }
   try {
     const user = await User.findUserByCredentials(email, password);
 
@@ -30,9 +23,9 @@ const loginUser = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    if (err.name === "ValidationError") {
+    if (err.message === "Incorrect email or password") {
       return res
-        .status(errors.BAD_REQUEST_STATUS_CODE)
+        .status(errors.UNAUTHORIZED_STATUS_CODE)
         .send({ message: "Invalid data provided for user login" });
     }
     return res
@@ -136,7 +129,6 @@ const updateUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
   getCurrentUser,
   loginUser,
