@@ -1,5 +1,6 @@
 const ClothingItem = require("../models/clothingItem");
 const errors = require("../utils/errors");
+const defaultClothingItems = require("../utils/defaultClothingItems");
 
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
@@ -25,7 +26,10 @@ const createItem = (req, res) => {
 
 const getItems = (req, res) => {
   ClothingItem.find({})
-    .then((items) => res.status(errors.OK_STATUS_CODE).send(items))
+    .then((items) => {
+      const allItems = [...defaultClothingItems, ...items];
+      res.status(errors.OK_STATUS_CODE).send(allItems);
+    })
     .catch((err) => {
       console.error(err);
       res

@@ -20,7 +20,7 @@ app.use(express.json());
 
 app.post("/signup", createUser);
 
-app.post("/signin", loginUser);
+app.post("/login", loginUser);
 
 app.use("/", mainRouter);
 
