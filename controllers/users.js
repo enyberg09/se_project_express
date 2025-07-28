@@ -18,8 +18,7 @@ const loginUser = async (req, res) => {
     });
     return res.status(errors.OK_STATUS_CODE).send({
       token,
-      email: user.email,
-      _id: user._id,
+      user,
     });
   } catch (err) {
     console.error(err);
