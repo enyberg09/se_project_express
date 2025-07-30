@@ -7,7 +7,7 @@ const {
   validateUserCreation,
   validateUserLogin,
 } = require("./middleware/validation");
-const { requestLogger, errorLogger } = require("./middlewares/logger");
+const { requestLogger, errorLogger } = require("./middleware/logger");
 const mainRouter = require("./routes/index");
 const errorHandler = require("./middleware/error-handler");
 
