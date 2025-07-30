@@ -7,6 +7,7 @@ const {
   validateUserCreation,
   validateUserLogin,
 } = require("./middleware/validation");
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 const mainRouter = require("./routes/index");
 const errorHandler = require("./middleware/error-handler");
 
@@ -23,6 +24,9 @@ mongoose
 app.use(cors());
 
 app.use(express.json());
+
+app.use(requestLogger);
+app.use(routes);
 
 app.post("/signup", validateUserCreation, createUser);
 
