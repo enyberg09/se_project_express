@@ -1,7 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { errors } = require("celebrate");
 const { createUser, loginUser } = require("./controllers/users");
+const {
+  validateUserCreation,
+  validateUserLogin,
+} = require("./middleware/validation");
 const mainRouter = require("./routes/index");
 const errorHandler = require("./middleware/error-handler");
 
@@ -19,11 +24,13 @@ app.use(cors());
 
 app.use(express.json());
 
-app.post("/signup", createUser);
+app.post("/signup", validateUserCreation, createUser);
 
-app.post("/login", loginUser);
+app.post("/login", validateUserLogin, loginUser);
 
 app.use("/", mainRouter);
+
+app.use(errors());
 
 app.use(errorHandler);
 
