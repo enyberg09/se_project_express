@@ -26,13 +26,14 @@ app.use(cors());
 app.use(express.json());
 
 app.use(requestLogger);
-app.use(routes);
 
 app.post("/signup", validateUserCreation, createUser);
 
 app.post("/login", validateUserLogin, loginUser);
 
 app.use("/", mainRouter);
+
+app.use(errorLogger);
 
 app.use(errors());
 
