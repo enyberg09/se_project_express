@@ -16,7 +16,7 @@ const app = express();
 const { PORT = 3001 } = process.env;
 
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/wtwr_db")
   .then(() => {
     console.log("Connected to DB");
   })
@@ -36,7 +36,7 @@ app.get('/crash-test', () => {
 
 app.post("/signup", validateUserCreation, createUser);
 
-app.post("/login", validateUserLogin, loginUser);
+app.post("/signin", validateUserLogin, loginUser);
 
 app.use("/", mainRouter);
 

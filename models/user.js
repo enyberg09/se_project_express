@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const { UnauthorizedError } = require("../errors");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -44,22 +45,22 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function hashPassword(next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);
   }
   next();
 });
 
-userSchema.statics.findUserByCredentials = async function (email, password) {
+userSchema.statics.findUserByCredentials = async function findUserByCredentials(email, password) {
   const user = await this.findOne({ email }).select("+password");
   if (!user) {
-    return Promise.reject(new Error("Incorrect email or password"));
+    throw new UnauthorizedError("Incorrect email or password");
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return Promise.reject(new Error("Incorrect email or password"));
+    throw new UnauthorizedError("Incorrect email or password");
   }
 
   return user;
