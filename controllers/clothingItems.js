@@ -2,7 +2,7 @@ const ClothingItem = require("../models/clothingItem");
 const {
   BadRequestError,
   NotFoundError,
-  NotAuthorizedError,
+  ForbiddenError,
   InternalError,
 } = require("../errors");
 const defaultClothingItems = require("../utils/defaultClothingItems");
@@ -40,7 +40,7 @@ const deleteItem = async (req, res, next) => {
     const item = await ClothingItem.findById(itemId).orFail();
 
     if (item.owner.toString() !== req.user._id) {
-      return next(new NotAuthorizedError("You are not authorized to delete this item"));
+      return next(new ForbiddenError("You are not authorized to delete this item"));
     }
 
     await item.deleteOne();
